@@ -10,6 +10,7 @@
 
 #include "Node.h"
 #include <vector>
+#include "TimeHandler.h"
 
 class NodeHandler {
 public:
@@ -19,7 +20,7 @@ public:
 	Node* getNode(int i);
 	int getNodeNum();
 
-	void writeState();
+	void writeState(TimeHandler timeHandler);
 
 private:
 	std::vector<Node*> nodes;

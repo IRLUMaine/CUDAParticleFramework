@@ -23,12 +23,14 @@ int main(int argc, char* argv[]) {
 		nodeHandler.getNode(i)->setData(MASSI, MASS);
 	}
 
+	nodeHandler.writeState(timeHandler);
+
 	while (!timeHandler.isDone()) {
 		waterFaker.generateElements(femUtil, nodeHandler, timeHandler);
 		waterFaker.solveStep(femUtil, nodeHandler, timeHandler);
 		waterFaker.postStepProc(femUtil, nodeHandler, timeHandler);
 
-		nodeHandler.writeState();
+		nodeHandler.writeState(timeHandler);
 
 		timeHandler.incrementTime();
 	}

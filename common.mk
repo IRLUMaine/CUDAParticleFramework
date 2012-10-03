@@ -1,6 +1,6 @@
 OBJDIR=$(PREFIX)/objs
 INCLUDES=-I $(PREFIX)/
-CFLAGS=-g -Wall $(INCLUDES)
+CFLAGS=-g -Wall $(INCLUDES) -O3
 LIBS=-lreadline
 CC=g++
 

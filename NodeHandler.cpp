@@ -16,6 +16,7 @@ NodeHandler::NodeHandler(int sizeX, int sizeY, float startX, float startY,
 	float xSpace = (endX - startX) / (sizeX - 1);
 	float ySpace = (endY - startY) / (sizeY - 1);
 	for (int i = 0; i < sizeX; i++) {
+		y = startY;
 		for (int j = 0; j < sizeY; j++) {
 			nodes.push_back(new Node(x, y, 0, NULL, nodeDataSize));
 
@@ -39,6 +40,8 @@ int NodeHandler::getNodeNum() {
 	return nodes.size();
 }
 
-void NodeHandler::writeState() {
-	printf("Writing\n");
+void NodeHandler::writeState(TimeHandler timeHandler) {
+	for (unsigned int i = 0; i < nodes.size(); i++) {
+		printf("%d %f %f %f %f\n", i, nodes[i]->getX(), nodes[i]->getY(), nodes[i]->getZ(), timeHandler.getTime());
+	}
 }

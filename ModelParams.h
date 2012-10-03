@@ -9,13 +9,14 @@
 #define MODELPARAMS_H_
 
 #define DELTA_TIME .01f
-#define LENGTH .02f
-#define MASS 1
+#define LENGTH 10
+#define MASS 20
 
-#define GRAVITY 9.8f
+#define GRAVITY .5f
 #define MAX_RAD .01f
-#define MIN_RAD .001f
-#define MAX_FORCE 20f
+#define MIN_RAD 0
+#define MAX_FORCE 1500
+#define RAND_AMOUNT .1f
 
 #define NUMX 100
 #define NUMY 100
