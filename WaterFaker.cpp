@@ -11,6 +11,8 @@
 #include <stdlib.h>
 #include "ModelParams.h"
 
+#define frand() ((((float)rand()) / RAND_MAX) - .5f)
+
 WaterFaker::WaterFaker() {
 	// TODO Auto-generated constructor stub
 
@@ -31,8 +33,8 @@ void WaterFaker::solveStep(FEMUtil &femUtil, NodeHandler &nodeHandler,
 		Node* current = nodeHandler.getNode(i);
 		Node* other;
 		float fx = rand() * RAND_AMOUNT / RAND_MAX;
-		float fy = -GRAVITY + rand() * RAND_AMOUNT / RAND_MAX;
-		float fz = 0;
+		float fy = -GRAVITY + frand() * RAND_AMOUNT;
+//		float fz = 0;
 		float adx, dx;
 		float ady, dy;
 		float dist;
@@ -50,10 +52,15 @@ void WaterFaker::solveStep(FEMUtil &femUtil, NodeHandler &nodeHandler,
 					if (ady < MAX_RAD) {
 						dist = sqrt(dx*dx+dy*dy);
 						if (dist < MAX_RAD) {
-							force = (dist - MIN_RAD) / (MAX_RAD - MIN_RAD);
+							force = MAX_FORCE * ((MAX_RAD - dist) / (MAX_RAD - MIN_RAD));
 //							printf("Collision %f\n", force);
-							fx += dx * force / dist;
-							fy += dy * force / dist;
+							if (dist > ARB_SMALL) {
+								fx += dx * force / dist;
+								fy += dy * force / dist;
+							} else {
+								other->move(frand() * 2 * MAX_RAD, frand() * 2 * MAX_RAD, 0);
+								printf("Too Small\n");
+							}
 						}
 					}
 				}
@@ -61,7 +68,7 @@ void WaterFaker::solveStep(FEMUtil &femUtil, NodeHandler &nodeHandler,
 		}
 		current->setData(MXI, current->getData(MXI) + fx * dt);
 		current->setData(MYI, current->getData(MYI) + fy * dt);
-		current->setData(MZI, current->getData(MZI) + fz * dt);
+//		current->setData(MZI, current->getData(MZI) + fz * dt);
 //		printf("Force %f %f %f - Momentum %f %f %f\n", fx, fy, fz, current->getData(MXI), current->getData(MYI), current->getData(MZI));
 	}
 }
@@ -74,7 +81,8 @@ void WaterFaker::postStepProc(FEMUtil &femUtil, NodeHandler &nodeHandler,
 
 		current->move(current->getData(MXI) * dt,
 				current->getData(MYI) * dt,
-				current->getData(MZI) * dt);
+				0);
+//				current->getData(MZI) * dt);
 		float x = current->getX();
 		float y = current->getY();
 		if (isnan(x) || isnan(y)) {
@@ -82,13 +90,17 @@ void WaterFaker::postStepProc(FEMUtil &femUtil, NodeHandler &nodeHandler,
 			exit(1);
 		}
 		if (x < WALL_MINX) {
+			current->setData(MXI, -current->getData(MXI) * .9f);
 			current->setX(WALL_MINX);
 		} else if (x > WALL_MAXX) {
+			current->setData(MXI, -current->getData(MXI) * .9f);
 			current->setX(WALL_MAXX);
 		}
 		if (y < WALL_MINY) {
+			current->setData(MYI, 0);
 			current->setY(WALL_MINY);
 		} else if (y > WALL_MAXY) {
+			current->setData(MYI, 0);
 			current->setY(WALL_MAXY);
 		}
 	}
